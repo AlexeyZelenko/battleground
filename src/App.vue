@@ -30,19 +30,30 @@
 
     <Footer/>
 
+    <Vue3DownUpButton >
+      <template #top>
+        <img src="@/assets/buttonTop.png" >
+      </template>
+      <template #down>
+        <img src="@/assets/buttonDown.png" >
+      </template>
+    </Vue3DownUpButton>
+
   </v-app>
 </template>
 
 <script>
 import Footer from './components/Footer';
 import Table from './components/Table';
+import Vue3DownUpButton from 'vuejs3-up-down-button'
 
 export default {
   name: 'App',
 
   components: {
     Footer,
-    Table
+    Table,
+    Vue3DownUpButton
   },
 
   data: () => ({

@@ -20,21 +20,39 @@
         </v-btn>
       </form>
     </v-container>
-    <!--    Объем поиска-->
-    <!--    <v-text-field-->
-    <!--        :value="pageCount"-->
-    <!--        @input="pageCount = parseInt($event, 100)"-->
-    <!--        label="Объем поиска"-->
-    <!--        max="100"-->
-    <!--        min="-1"-->
-    <!--        type="number"-->
-    <!--    ></v-text-field>-->
+    <div
+        v-if="listPACKAGES"
+        class="text-center ma-3"
+    >
+      <v-btn
+          class="ma-2"
+          tile
+          outlined
+          style="color: green"
+          @click="prevSlide">
+        <v-icon left>mdi-chevron-left</v-icon> Назад
+      </v-btn>
+      <v-btn
+          class="ma-2"
+          tile
+          outlined
+          style="color: green"
+      >
+        {{this.currentPage + 1}}
+      </v-btn>
+      <v-btn
+          class="ma-2"
+          tile
+          outlined
+          style="color: green"
+          @click="nextSlide">
+        <v-icon left>mdi-chevron-right</v-icon> Вперед
+      </v-btn>
+    </div>
     <v-data-table
         :headers="headers"
-        :items="PACKAGES.hits"
-        :items-per-page="itemsPerPage"
-        :page.sync="page"
-        class="elevation-1"
+        :items="listPACKAGES"
+        hide-default-footer
     >
       <template v-slot:top>
         <v-toolbar>
@@ -51,11 +69,16 @@
           >
             <v-card>
               <p
-                  class="display-1 text--primary"
-                  v-html="editedItem.ownername"
+                  class="display-1 text--primary py-4 pa-4"
+                  v-html="editedItem.name"
               ></p>
               <v-card-title>
-                <span class="headline" v-html="editedItem.name"></span>
+                <span
+                    class="headline"
+                    v-html="editedItem.owner.name"
+                >
+
+                </span>
               </v-card-title>
 
               <v-card-text>
@@ -104,17 +127,17 @@
                     <v-list class="teal">
                       <v-list-item>
                         <v-list-item-avatar>
-                          <v-img :src=owneravatar></v-img>
+                          <v-img :src=personAvatar></v-img>
                         </v-list-item-avatar>
                       </v-list-item>
 
                       <v-list-item link>
                         <v-list-item-content>
                           <v-list-item-title class="title">
-                            {{ ownername }}
+                            {{ personName }}
                           </v-list-item-title>
                           <v-list-item-subtitle>
-                            {{ ownerlink }}
+                            {{ personLink }}
                           </v-list-item-subtitle>
                         </v-list-item-content>
 
@@ -179,6 +202,35 @@
         </v-btn>
       </template>
     </v-data-table>
+    <div
+        v-if="listPACKAGES"
+        class="text-center ma-3"
+    >
+      <v-btn
+          class="ma-2"
+          tile
+          outlined
+          style="color: green"
+          @click="prevSlide">
+        <v-icon left>mdi-chevron-left</v-icon> Назад
+      </v-btn>
+      <v-btn
+          class="ma-2"
+          tile
+          outlined
+          style="color: green"
+      >
+         {{this.currentPage + 1}}
+      </v-btn>
+      <v-btn
+          class="ma-2"
+          tile
+          outlined
+          style="color: green"
+          @click="nextSlide">
+        <v-icon left>mdi-chevron-right</v-icon> Вперед
+      </v-btn>
+    </div>
   </v-container>
 </template>
 
@@ -187,9 +239,8 @@ import {mapActions, mapGetters} from 'vuex'
 
 export default {
   data: () => ({
-    page: 1,
-    pageCount: 100,
-    itemsPerPage: 10,
+    currentPage: 0,
+    pageCount: 10,
     name: '',
     dialog: false,
     headers: [
@@ -203,11 +254,13 @@ export default {
       },
       {text: 'version', value: 'version'},
       {text: 'description', value: 'description'},
-      {text: 'author', value: 'ownername'},
       {text: 'avatar', value: 'owner.avatar'},
       {text: 'license', value: 'license'},
       {text: 'Actions', value: 'actions', sortable: false},
     ],
+    personName: '',
+    personLink: '',
+    personAvatar: '',
     editedItem: {
       name: '',
       version: null,
@@ -216,16 +269,16 @@ export default {
       author: '',
       github: '',
       owner: {},
-      ownername: '',
-      ownerlink: '',
-      owneravatar: ''
     }
   }),
 
   computed: {
     ...mapGetters([
       'PACKAGES',
-    ])
+    ]),
+    listPACKAGES () {
+      return this.PACKAGES.hits
+    }
   },
 
   watch: {
@@ -238,13 +291,38 @@ export default {
     ...mapActions([
       'getData',
     ]),
-    async submit() {
-      const value = {
+    async prevSlide() {
+      if(this.currentPage > 0) {
+        this.currentPage--
+        const payload = {
+          name: this.name,
+          currentPage: this.currentPage,
+          pageCount: this.pageCount
+        }
+        await this.$store.dispatch('getData',  payload  )
+        console.log(this.currentPage)
+      }
+    },
+    async nextSlide() {
+      if(this.currentPage >= this.PACKAGES.nbPages) {
+        this.currentPage = 0
+      } else
+        this.currentPage++
+      const payload = {
         name: this.name,
-        page: this.page,
+        currentPage: this.currentPage,
         pageCount: this.pageCount
       }
-      this.getData(value)
+      await this.$store.dispatch('getData',  payload  )
+      console.log(this.currentPage)
+    },
+    async submit() {
+      const payload = {
+        name: this.name,
+        currentPage: this.currentPage,
+        pageCount: this.pageCount
+      }
+      await this.$store.dispatch('getData',  payload  )
     },
     clear() {
       this.name = ''
@@ -253,9 +331,9 @@ export default {
     editItem(item) {
       const _ = require('lodash')
       const deepCopy = _.cloneDeep(item.owner)
-      this.ownername = deepCopy.name
-      this.ownerlink = deepCopy.link
-      this.owneravatar = deepCopy.avatar
+      this.personName = deepCopy.name
+      this.personLink = deepCopy.link
+      this.personAvatar = deepCopy.avatar
       this.editedItem = item
       this.dialog = true
     },
