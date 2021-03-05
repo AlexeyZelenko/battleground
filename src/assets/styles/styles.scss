@@ -1,0 +1,21 @@
+@import 'variables.scss';
+@import '~vuetify/src/styles/styles.sass';
+
+
+
+.footer_class {
+  padding: $padding $padding*2;
+  background: $green-bg;
+  color: $text-button-color;
+  border: 0;
+  border-radius: $radius;
+  outline: none;
+  cursor: pointer;
+  &:hover {
+    background: $green-bg-hover;
+  }
+}
+
+
+
+
