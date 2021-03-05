@@ -54,10 +54,6 @@ export default {
     Footer,
     Table,
     Vue3DownUpButton
-  },
-
-  data: () => ({
-    page: 1
-  }),
-};
+  }
+}
 </script>

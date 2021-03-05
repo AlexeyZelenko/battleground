@@ -300,7 +300,6 @@ export default {
           pageCount: this.pageCount
         }
         await this.$store.dispatch('getData',  payload  )
-        console.log(this.currentPage)
       }
     },
     async nextSlide() {
@@ -314,7 +313,6 @@ export default {
         pageCount: this.pageCount
       }
       await this.$store.dispatch('getData',  payload  )
-      console.log(this.currentPage)
     },
     async submit() {
       const payload = {
