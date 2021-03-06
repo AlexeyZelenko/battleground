@@ -35,20 +35,16 @@ export default new Vuex.Store({
       commit('SET_DATA', data)
     },
     async listVersionData({commit}, payload) {
-      console.log(payload)
       const response = await fetch(`https://data.jsdelivr.com/v1/package/npm/${payload}`)
       const data = await response.json()
-      console.log(data)
       commit('SET_VERSION_DATA', data)
     },
 
     async filePackageData({commit}, payload) {
-      console.log('payload',payload)
       const packageNPM = payload.package
       const version = payload.version
       const response = await fetch(`https://data.jsdelivr.com/v1/package/npm/${packageNPM}@${version}`)
       const data = await response.json()
-      console.log(data)
       commit('SET_FILE_PACKAGE', data)
     }
   },

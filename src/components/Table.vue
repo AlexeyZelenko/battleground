@@ -90,8 +90,6 @@
                           column
                       >
                         <v-chip>{{ editedItem.version }}</v-chip>
-<!--                        <v-chip>latest {{ getListPackageVersion.tags.latest }}</v-chip>-->
-<!--                        <v-chip>beta {{ getListPackageVersion.tags.next }}</v-chip>-->
                         <v-chip>{{ editedItem.license }}</v-chip>
                       </v-chip-group>
                     </v-card-text>
@@ -101,8 +99,8 @@
                           <v-combobox
                               v-model="select"
                               :items="getListPackageVersion.versions"
-                              label="Выбрать версию"
                               dense
+                              label="Выбрать версию"
                           ></v-combobox>
                         </v-col>
                       </v-row>
@@ -138,9 +136,9 @@
                     <v-divider></v-divider>
 
                     <v-card-text>
-                      <h3>Здесь будут файлы версии {{select}}</h3>
-                      <p style="margin: 10px">default <strong>{{getFilePackage.default}}</strong></p>
-                      <p style="margin: 10px">Массивов - {{getFilePackage.files.length}}</p>
+                      <h3>Здесь будут файлы версии {{ select }}</h3>
+                      <p style="margin: 10px">default <strong>{{ getFilePackage.default }}</strong></p>
+<!--                      <p style="margin: 10px">Массивов - {{ getFilePackage.files.length }}</p>-->
                     </v-card-text>
 
                   </div>
@@ -321,10 +319,10 @@ export default {
       'getListPackageVersion',
       'getFilePackage'
     ]),
-    listPACKAGES () {
+    listPACKAGES() {
       return this.PACKAGES.hits
     },
-    payload () {
+    payload() {
       return {
         name: this.name,
         currentPage: this.currentPage,
@@ -339,7 +337,7 @@ export default {
       'listVersionData',
       'filePackageData'
     ]),
-    async showPackageFile () {
+    async showPackageFile() {
       this.show = !this.show
       const value =
           {
@@ -348,7 +346,7 @@ export default {
           }
       await this.$store.dispatch('filePackageData', value)
     },
-    getColor (version) {
+    getColor(version) {
       const versionColor = +version[0]
       if (versionColor < 1) return 'red'
       else if (versionColor === 1) return 'orange'
@@ -381,7 +379,6 @@ export default {
     },
 
     async editItem(item) {
-      console.log('item', item)
       const _ = require('lodash')
       const deepCopy = _.cloneDeep(item.owner)
       this.name = item.name
@@ -401,10 +398,11 @@ export default {
 </script>
 
 <style lang="scss">
- .btn {
-   color: $green-color
- }
- .showFile {
-   margin-bottom: 15px;
- }
+.btn {
+  color: $green-color
+}
+
+.showFile {
+  margin-bottom: 15px;
+}
 </style>
