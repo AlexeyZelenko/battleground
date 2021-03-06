@@ -32,10 +32,10 @@
 
     <Vue3DownUpButton >
       <template #top>
-        <img src="@/assets/buttonTop.png" >
+        <img src="@/assets/buttonTop.png" alt="">
       </template>
       <template #down>
-        <img src="@/assets/buttonDown.png" >
+        <img src="@/assets/buttonDown.png" alt="">
       </template>
     </Vue3DownUpButton>
 

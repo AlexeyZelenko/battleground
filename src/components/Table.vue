@@ -26,27 +26,28 @@
     >
       <v-btn
           class="ma-2"
-          tile
           outlined
           style="color: green"
+          tile
           @click="prevSlide">
-        <v-icon left>mdi-chevron-left</v-icon> Назад
+        <v-icon left>mdi-chevron-left</v-icon>
+        Назад
       </v-btn>
       <v-btn
           class="ma-2"
-          tile
-          outlined
           style="color: green"
+          tile
       >
-        {{this.currentPage + 1}}
+        {{ this.currentPage + 1 }}
       </v-btn>
       <v-btn
           class="ma-2"
-          tile
           outlined
           style="color: green"
+          tile
           @click="nextSlide">
-        <v-icon left>mdi-chevron-right</v-icon> Вперед
+        <v-icon left>mdi-chevron-right</v-icon>
+        Вперед
       </v-btn>
     </div>
     <v-data-table
@@ -208,27 +209,28 @@
     >
       <v-btn
           class="ma-2"
-          tile
           outlined
           style="color: green"
+          tile
           @click="prevSlide">
-        <v-icon left>mdi-chevron-left</v-icon> Назад
+        <v-icon left>mdi-chevron-left</v-icon>
+        Назад
       </v-btn>
       <v-btn
           class="ma-2"
-          tile
-          outlined
           style="color: green"
+          tile
       >
-         {{this.currentPage + 1}}
+        {{ this.currentPage + 1 }}
       </v-btn>
       <v-btn
           class="ma-2"
-          tile
           outlined
           style="color: green"
+          tile
           @click="nextSlide">
-        <v-icon left>mdi-chevron-right</v-icon> Вперед
+        <v-icon left>mdi-chevron-right</v-icon>
+        Вперед
       </v-btn>
     </div>
   </v-container>
@@ -278,12 +280,13 @@ export default {
     ]),
     listPACKAGES () {
       return this.PACKAGES.hits
-    }
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close()
+    },
+    payload () {
+      return {
+        name: this.name,
+        currentPage: this.currentPage,
+        pageCount: this.pageCount
+      }
     }
   },
 
@@ -292,35 +295,20 @@ export default {
       'getData',
     ]),
     async prevSlide() {
-      if(this.currentPage > 0) {
+      if (this.currentPage > 0) {
         this.currentPage--
-        const payload = {
-          name: this.name,
-          currentPage: this.currentPage,
-          pageCount: this.pageCount
-        }
-        await this.$store.dispatch('getData',  payload  )
+        await this.$store.dispatch('getData', this.payload)
       }
     },
     async nextSlide() {
-      if(this.currentPage >= this.PACKAGES.nbPages) {
+      if (this.currentPage >= this.PACKAGES.nbPages) {
         this.currentPage = 0
       } else
         this.currentPage++
-      const payload = {
-        name: this.name,
-        currentPage: this.currentPage,
-        pageCount: this.pageCount
-      }
-      await this.$store.dispatch('getData',  payload  )
+      await this.$store.dispatch('getData', this.payload)
     },
     async submit() {
-      const payload = {
-        name: this.name,
-        currentPage: this.currentPage,
-        pageCount: this.pageCount
-      }
-      await this.$store.dispatch('getData',  payload  )
+      await this.$store.dispatch('getData', this.payload)
     },
     clear() {
       this.name = ''
@@ -342,3 +330,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+ .btn {
+   color: $green-color
+ }
+</style>

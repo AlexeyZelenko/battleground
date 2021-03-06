@@ -90,7 +90,7 @@ export default {
   data: () => ({
     user: {
       initials: 'OZ',
-      fullName: 'Oleksii Zelenko',
+      fullName: "Oleksii Zelenko",
       email: 'zelenkooleksii75@gmail.com',
     },
   }),
