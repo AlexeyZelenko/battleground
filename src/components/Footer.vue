@@ -66,6 +66,7 @@
                                 depressed
                                 rounded
                                 text
+                                href="https://github.com/AlexeyZelenko/battleground"
                             >
                               Git проэкта
                             </v-btn>
@@ -91,7 +92,7 @@ export default {
     user: {
       initials: 'OZ',
       fullName: "Oleksii Zelenko",
-      email: 'https://github.com/AlexeyZelenko/battleground',
+      email: 'zelenkooleksii75@gmail.com',
     },
   }),
 }

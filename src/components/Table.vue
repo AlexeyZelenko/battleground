@@ -175,7 +175,7 @@
       </template>
       <template v-slot:item.version="{ item }">
         <v-chip
-            color=blue
+            :color="getColor(item.version)"
             dark
         >
           {{ item.version }}
@@ -295,6 +295,17 @@ export default {
     ...mapActions([
       'getData',
     ]),
+    getColor (version) {
+      if (+version[0] < 1) return 'red'
+      else if (+version[0] === 1) return 'orange'
+      else if (+version[0] === 2) return 'yellow'
+      else if (+version[0] === 3) return 'green'
+      else if (+version[0] === 4) return 'red'
+      else if (+version[0] === 5) return 'grey'
+      else if (+version[0] === 6) return '#911'
+      else if (+version[0] === 7) return '#541'
+      else return 'blue'
+    },
     async prevSlide() {
       if (this.currentPage > 0) {
         this.currentPage--
