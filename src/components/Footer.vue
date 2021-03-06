@@ -91,7 +91,7 @@ export default {
     user: {
       initials: 'OZ',
       fullName: "Oleksii Zelenko",
-      email: 'zelenkooleksii75@gmail.com',
+      email: 'https://github.com/AlexeyZelenko/battleground',
     },
   }),
 }

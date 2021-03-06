@@ -51,6 +51,7 @@
       </v-btn>
     </div>
     <v-data-table
+        v-if="listPACKAGES"
         :headers="headers"
         :items="listPACKAGES"
         hide-default-footer
