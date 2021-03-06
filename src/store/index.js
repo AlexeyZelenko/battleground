@@ -6,15 +6,27 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    ListPackages: {}
+    ListPackages: {},
+    ListPackageVersion: {},
+    searchNPM: '',
+    FilePackage: []
   },
   mutations: {
     SET_DATA (state, data) {
       state.ListPackages = data
     },
+    SET_VERSION_DATA (state, data) {
+      state.ListPackageVersion = data
+    },
+    SET_SEARCH_NPM (state, data) {
+      state.searchNPM = data
+    },
+    SET_FILE_PACKAGE (state, data) {
+      state.FilePackage = data
+    },
   },
   actions: {
-    async getData ({ commit }, payload) {
+    async getData({commit}, payload) {
       const searchNPM = payload.name
       const currentPage = payload.currentPage
       const itemsPerPage = payload.pageCount
@@ -22,10 +34,31 @@ export default new Vuex.Store({
       const data = response.response
       commit('SET_DATA', data)
     },
+    async listVersionData({commit}, payload) {
+      console.log(payload)
+      const response = await fetch(`https://data.jsdelivr.com/v1/package/npm/${payload}`)
+      const data = await response.json()
+      console.log(data)
+      commit('SET_VERSION_DATA', data)
+    },
+
+    async filePackageData({commit}, payload) {
+      console.log('payload',payload)
+      const packageNPM = payload.package
+      const version = payload.version
+      const response = await fetch(`https://data.jsdelivr.com/v1/package/npm/${packageNPM}@${version}`)
+      const data = await response.json()
+      console.log(data)
+      commit('SET_FILE_PACKAGE', data)
+    }
   },
   getters: {
-    PACKAGES: s => s.ListPackages
+    PACKAGES: s => s.ListPackages,
+    searchNPM: s => s.searchNPM,
+    getListPackageVersion: s => s.ListPackageVersion,
+    getFilePackage: s => s.FilePackage
   },
   modules: {
   }
 })
+

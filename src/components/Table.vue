@@ -79,10 +79,8 @@
                     class="headline"
                     v-html="editedItem.owner.name"
                 >
-
                 </span>
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-row>
@@ -92,9 +90,23 @@
                           column
                       >
                         <v-chip>{{ editedItem.version }}</v-chip>
+<!--                        <v-chip>latest {{ getListPackageVersion.tags.latest }}</v-chip>-->
+<!--                        <v-chip>beta {{ getListPackageVersion.tags.next }}</v-chip>-->
                         <v-chip>{{ editedItem.license }}</v-chip>
                       </v-chip-group>
                     </v-card-text>
+                    <v-container fluid>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-combobox
+                              v-model="select"
+                              :items="getListPackageVersion.versions"
+                              label="Выбрать версию"
+                              dense
+                          ></v-combobox>
+                        </v-col>
+                      </v-row>
+                    </v-container>
                     <v-divider class="mx-4"></v-divider>
                     <div class="my-4 subtitle-1">
                       {{ editedItem.description }}
@@ -108,6 +120,32 @@
                   </v-row>
                 </v-container>
               </v-card-text>
+              <v-spacer></v-spacer>
+              <div class="showFile">
+                <v-card-actions>
+                  <v-btn
+                      icon
+                      @click="showPackageFile"
+                  >
+                    <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <p>Файлы выбранной версии</p>
+                </v-card-actions>
+
+                <v-expand-transition>
+                  <div v-show="show">
+                    <v-divider></v-divider>
+
+                    <v-card-text>
+                      <h3>Здесь будут файлы версии {{select}}</h3>
+                      <p style="margin: 10px">default <strong>{{getFilePackage.default}}</strong></p>
+                      <p style="margin: 10px">Массивов - {{getFilePackage.files.length}}</p>
+                    </v-card-text>
+
+                  </div>
+                </v-expand-transition>
+              </div>
 
               <v-footer
                   dark
@@ -242,6 +280,8 @@ import {mapActions, mapGetters} from 'vuex'
 
 export default {
   data: () => ({
+    show: false,
+    select: '',
     currentPage: 0,
     pageCount: 10,
     name: '',
@@ -278,6 +318,8 @@ export default {
   computed: {
     ...mapGetters([
       'PACKAGES',
+      'getListPackageVersion',
+      'getFilePackage'
     ]),
     listPACKAGES () {
       return this.PACKAGES.hits
@@ -294,16 +336,28 @@ export default {
   methods: {
     ...mapActions([
       'getData',
+      'listVersionData',
+      'filePackageData'
     ]),
+    async showPackageFile () {
+      this.show = !this.show
+      const value =
+          {
+            package: this.name || this.name,
+            version: this.select || this.editedItem.version
+          }
+      await this.$store.dispatch('filePackageData', value)
+    },
     getColor (version) {
-      if (+version[0] < 1) return 'red'
-      else if (+version[0] === 1) return 'orange'
-      else if (+version[0] === 2) return 'yellow'
-      else if (+version[0] === 3) return 'green'
-      else if (+version[0] === 4) return 'red'
-      else if (+version[0] === 5) return 'grey'
-      else if (+version[0] === 6) return '#911'
-      else if (+version[0] === 7) return '#541'
+      const versionColor = +version[0]
+      if (versionColor < 1) return 'red'
+      else if (versionColor === 1) return 'orange'
+      else if (versionColor === 2) return 'yellow'
+      else if (versionColor === 3) return 'green'
+      else if (versionColor === 4) return 'red'
+      else if (versionColor === 5) return 'grey'
+      else if (versionColor === 6) return '#911'
+      else if (versionColor === 7) return '#541'
       else return 'blue'
     },
     async prevSlide() {
@@ -326,14 +380,17 @@ export default {
       this.name = ''
     },
 
-    editItem(item) {
+    async editItem(item) {
+      console.log('item', item)
       const _ = require('lodash')
       const deepCopy = _.cloneDeep(item.owner)
+      this.name = item.name
       this.personName = deepCopy.name
       this.personLink = deepCopy.link
       this.personAvatar = deepCopy.avatar
       this.editedItem = item
       this.dialog = true
+      await this.$store.dispatch('listVersionData', item.name)
     },
 
     close() {
@@ -346,5 +403,8 @@ export default {
 <style lang="scss">
  .btn {
    color: $green-color
+ }
+ .showFile {
+   margin-bottom: 15px;
  }
 </style>
